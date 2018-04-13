@@ -9,11 +9,25 @@ using Microsoft.WindowsAzure.Storage;
 using Microsoft.WindowsAzure.Storage.File;
 using Microsoft.Azure;
 using System.IO;
+using MVCStorageAzureEJ.Models;
 
 namespace MVCStorageAzureEJ.Controllers
 {
     public class HomeController : Controller
     {
+        ModeloPeliculas modelo;
+        public HomeController()
+        {
+            Uri uri = HttpContext.Request.Url;
+            String rutauri = uri.Scheme + "://" + uri.Authority
+                + "/XML/EscenasPeliculas2.xml";
+            String path =
+                HttpContext.Server.MapPath("~/XML/EscenasPeliculas2.xml");
+
+            modelo = new ModeloPeliculas(rutauri,path);
+
+        }
+         
         public ActionResult Index()
         {
             return View();
@@ -57,9 +71,9 @@ namespace MVCStorageAzureEJ.Controllers
         }
         public ActionResult Pelis()
         {
-            ViewBag.Message = "Your application description page.";
+            List<Pelicula> pelis = modelo.GetPeliculas();
 
-            return View();
+            return View(pelis);
         }
 
         public ActionResult About()
